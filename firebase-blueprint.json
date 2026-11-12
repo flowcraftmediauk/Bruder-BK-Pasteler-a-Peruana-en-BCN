@@ -1,0 +1,431 @@
+{
+  "entities": {
+    "BakeryProfile": {
+      "title": "BakeryProfile",
+      "description": "Verified business profile and editable pending client information for Bruder BK Pastelería Peruana en BCN.",
+      "type": "object",
+      "properties": {
+        "businessName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120,
+          "description": "Official business name."
+        },
+        "category": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120,
+          "description": "Business category."
+        },
+        "location": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120,
+          "description": "Verified business city/country."
+        },
+        "phone": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 30,
+          "description": "Verified phone number."
+        },
+        "whatsapp": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 30,
+          "description": "Verified WhatsApp number."
+        },
+        "email": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 150,
+          "description": "Verified contact email."
+        },
+        "instagramUrl": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 300,
+          "description": "Verified Instagram URL."
+        },
+        "tiktokUrl": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 300,
+          "description": "Verified TikTok URL."
+        },
+        "heroImageUrl": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 500000,
+          "description": "Verified client photograph URL or data URI for hero section."
+        },
+        "aboutImageUrl": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 500000,
+          "description": "Verified client photograph URL or data URI for about section."
+        },
+        "officialDescription": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 2000,
+          "description": "Confirmed official business description."
+        },
+        "ownerBio": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 2000,
+          "description": "Confirmed owner biography and bakery story."
+        },
+        "fullAddress": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 300,
+          "description": "Confirmed full street address in Barcelona."
+        },
+        "openingHours": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 300,
+          "description": "Confirmed opening hours."
+        },
+        "flavoursAndSizes": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 1000,
+          "description": "Confirmed cake flavours and sizes."
+        },
+        "priceNotes": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 1000,
+          "description": "Confirmed product pricing information."
+        },
+        "orderingProcess": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 1000,
+          "description": "Confirmed custom cake ordering process."
+        },
+        "minimumOrder": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 500,
+          "description": "Confirmed minimum order requirements."
+        },
+        "deliveryOptions": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 1000,
+          "description": "Confirmed delivery or collection options and areas."
+        },
+        "paymentMethods": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 500,
+          "description": "Confirmed payment methods."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of last update."
+        },
+        "updatedBy": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "UID of admin who updated the profile."
+        }
+      },
+      "required": [
+        "businessName",
+        "category",
+        "location",
+        "phone",
+        "whatsapp",
+        "email",
+        "instagramUrl",
+        "tiktokUrl",
+        "heroImageUrl",
+        "aboutImageUrl",
+        "officialDescription",
+        "ownerBio",
+        "fullAddress",
+        "openingHours",
+        "flavoursAndSizes",
+        "priceNotes",
+        "orderingProcess",
+        "minimumOrder",
+        "deliveryOptions",
+        "paymentMethods",
+        "updatedAt",
+        "updatedBy"
+      ]
+    },
+    "ProductCategory": {
+      "title": "ProductCategory",
+      "description": "Verified product category card displayed on the homepage.",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120,
+          "description": "Category title."
+        },
+        "slug": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 80,
+          "pattern": "^[a-z0-9\\-]+$",
+          "description": "URL-safe category slug."
+        },
+        "sortOrder": {
+          "type": "number",
+          "description": "Display ordering index."
+        },
+        "verifiedSummary": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 500,
+          "description": "Confirmed category summary provided by the client."
+        },
+        "imageUrl": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 500000,
+          "description": "Verified client product photograph URL or data URI."
+        },
+        "cardTone": {
+          "type": "string",
+          "enum": ["blush", "ivory", "dusty", "cocoa"],
+          "description": "Visual card surface tone."
+        },
+        "isPublished": {
+          "type": "boolean",
+          "description": "Whether the category is visible publicly."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of last update."
+        },
+        "updatedBy": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "UID of admin who updated the category."
+        }
+      },
+      "required": [
+        "title",
+        "slug",
+        "sortOrder",
+        "verifiedSummary",
+        "imageUrl",
+        "cardTone",
+        "isPublished",
+        "updatedAt",
+        "updatedBy"
+      ]
+    },
+    "GalleryItem": {
+      "title": "GalleryItem",
+      "description": "Real client photograph entry in the product gallery.",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120,
+          "description": "Photo caption or product name confirmed by client."
+        },
+        "category": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120,
+          "description": "Associated category."
+        },
+        "imageUrl": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 500000,
+          "description": "Verified client photograph URL or data URI."
+        },
+        "sortOrder": {
+          "type": "number",
+          "description": "Display ordering index."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of creation."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of last update."
+        },
+        "createdBy": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "UID of admin who created the item."
+        }
+      },
+      "required": [
+        "title",
+        "category",
+        "imageUrl",
+        "sortOrder",
+        "createdAt",
+        "updatedAt",
+        "createdBy"
+      ]
+    },
+    "CustomerInquiry": {
+      "title": "CustomerInquiry",
+      "description": "Customer consultation or custom order inquiry stored for follow-up.",
+      "type": "object",
+      "properties": {
+        "userId": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Authenticated user UID."
+        },
+        "customerName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120,
+          "description": "Customer display name."
+        },
+        "customerEmail": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 160,
+          "description": "Customer verified email."
+        },
+        "categoryInterest": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120,
+          "description": "Selected product category of interest."
+        },
+        "message": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 2000,
+          "description": "Customer inquiry details."
+        },
+        "preferredContact": {
+          "type": "string",
+          "enum": ["whatsapp", "email"],
+          "description": "Preferred reply channel."
+        },
+        "status": {
+          "type": "string",
+          "enum": ["pendiente", "revisada", "respondida"],
+          "description": "Current inquiry status."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of creation."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of last update."
+        }
+      },
+      "required": [
+        "userId",
+        "customerName",
+        "customerEmail",
+        "categoryInterest",
+        "message",
+        "preferredContact",
+        "status",
+        "createdAt",
+        "updatedAt"
+      ]
+    },
+    "UserProfile": {
+      "title": "UserProfile",
+      "description": "Private authenticated user profile document.",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 128,
+          "pattern": "^[a-zA-Z0-9_\\-]+$",
+          "description": "Firebase Auth UID."
+        },
+        "displayName": {
+          "type": "string",
+          "minLength": 1,
+          "maxLength": 120,
+          "description": "User display name."
+        },
+        "email": {
+          "type": "string",
+          "minLength": 3,
+          "maxLength": 160,
+          "description": "User email."
+        },
+        "photoURL": {
+          "type": "string",
+          "minLength": 0,
+          "maxLength": 500,
+          "description": "User profile photo URL."
+        },
+        "createdAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of creation."
+        },
+        "updatedAt": {
+          "type": "string",
+          "format": "date-time",
+          "description": "Server timestamp of last update."
+        }
+      },
+      "required": [
+        "uid",
+        "displayName",
+        "email",
+        "photoURL",
+        "createdAt",
+        "updatedAt"
+      ]
+    }
+  },
+  "firestore": {
+    "/bakery_profile/{profileId}": {
+      "schema": { "$ref": "#/entities/BakeryProfile" },
+      "description": "Public verified bakery profile and editable client details."
+    },
+    "/products/{productId}": {
+      "schema": { "$ref": "#/entities/ProductCategory" },
+      "description": "Public verified product categories and photos."
+    },
+    "/gallery_items/{itemId}": {
+      "schema": { "$ref": "#/entities/GalleryItem" },
+      "description": "Public real client product photographs."
+    },
+    "/inquiries/{inquiryId}": {
+      "schema": { "$ref": "#/entities/CustomerInquiry" },
+      "description": "Private customer inquiries readable by the submitting user or admin."
+    },
+    "/users/{userId}": {
+      "schema": { "$ref": "#/entities/UserProfile" },
+      "description": "Private user account records isolated per user."
+    }
+  }
+}

@@ -1,0 +1,6 @@
+{
+  "name": "Bruder BK Pastelería Peruana en BCN",
+  "description": "Pastelería peruana artesanal en Barcelona. Tortas temáticas, bocaditos, tartas y temáticas infantiles bajo consulta directa por WhatsApp.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

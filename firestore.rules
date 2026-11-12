@@ -1,0 +1,288 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Global default-deny safety net
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Core primitives
+    function isValidId(id) {
+      return id is string && id.size() >= 1 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function incoming() {
+      return request.resource.data;
+    }
+
+    function existing() {
+      return resource.data;
+    }
+
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isVerifiedUser() {
+      return isSignedIn() && request.auth.token.email_verified == true;
+    }
+
+    function isAdmin() {
+      return isVerifiedUser() && (
+        exists(/databases/$(database)/documents/admins/$(request.auth.uid)) ||
+        request.auth.token.email == 'flowcraftmediauk@gmail.com'
+      );
+    }
+
+    // Validation Helpers (Strictly matching firebase-blueprint.json)
+    function isValidBakeryProfile(data) {
+      return data.keys().hasAll([
+          'businessName', 'category', 'location', 'phone', 'whatsapp', 'email',
+          'instagramUrl', 'tiktokUrl', 'heroImageUrl', 'aboutImageUrl',
+          'officialDescription', 'ownerBio', 'fullAddress', 'openingHours',
+          'flavoursAndSizes', 'priceNotes', 'orderingProcess', 'minimumOrder',
+          'deliveryOptions', 'paymentMethods', 'updatedAt', 'updatedBy'
+        ])
+        && data.keys().hasOnly([
+          'businessName', 'category', 'location', 'phone', 'whatsapp', 'email',
+          'instagramUrl', 'tiktokUrl', 'heroImageUrl', 'aboutImageUrl',
+          'officialDescription', 'ownerBio', 'fullAddress', 'openingHours',
+          'flavoursAndSizes', 'priceNotes', 'orderingProcess', 'minimumOrder',
+          'deliveryOptions', 'paymentMethods', 'updatedAt', 'updatedBy'
+        ])
+        && data.businessName is string && data.businessName.size() >= 1 && data.businessName.size() <= 120
+        && data.category is string && data.category.size() >= 1 && data.category.size() <= 120
+        && data.location is string && data.location.size() >= 1 && data.location.size() <= 120
+        && data.phone is string && data.phone.size() >= 1 && data.phone.size() <= 30
+        && data.whatsapp is string && data.whatsapp.size() >= 1 && data.whatsapp.size() <= 30
+        && data.email is string && data.email.size() >= 3 && data.email.size() <= 150
+        && data.instagramUrl is string && data.instagramUrl.size() <= 300
+        && data.tiktokUrl is string && data.tiktokUrl.size() <= 300
+        && data.heroImageUrl is string && data.heroImageUrl.size() <= 500000
+        && data.aboutImageUrl is string && data.aboutImageUrl.size() <= 500000
+        && data.officialDescription is string && data.officialDescription.size() <= 2000
+        && data.ownerBio is string && data.ownerBio.size() <= 2000
+        && data.fullAddress is string && data.fullAddress.size() <= 300
+        && data.openingHours is string && data.openingHours.size() <= 300
+        && data.flavoursAndSizes is string && data.flavoursAndSizes.size() <= 1000
+        && data.priceNotes is string && data.priceNotes.size() <= 1000
+        && data.orderingProcess is string && data.orderingProcess.size() <= 1000
+        && data.minimumOrder is string && data.minimumOrder.size() <= 500
+        && data.deliveryOptions is string && data.deliveryOptions.size() <= 1000
+        && data.paymentMethods is string && data.paymentMethods.size() <= 500
+        && data.updatedAt is timestamp
+        && data.updatedBy is string && data.updatedBy.size() >= 1 && data.updatedBy.size() <= 128 && data.updatedBy.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isValidProductCategory(data) {
+      return data.keys().hasAll([
+          'title', 'slug', 'sortOrder', 'verifiedSummary', 'imageUrl',
+          'cardTone', 'isPublished', 'updatedAt', 'updatedBy'
+        ])
+        && data.keys().hasOnly([
+          'title', 'slug', 'sortOrder', 'verifiedSummary', 'imageUrl',
+          'cardTone', 'isPublished', 'updatedAt', 'updatedBy'
+        ])
+        && data.title is string && data.title.size() >= 1 && data.title.size() <= 120
+        && data.slug is string && data.slug.size() >= 1 && data.slug.size() <= 80 && data.slug.matches('^[a-z0-9\\-]+$')
+        && data.sortOrder is number && data.sortOrder >= 0 && data.sortOrder <= 1000
+        && data.verifiedSummary is string && data.verifiedSummary.size() <= 500
+        && data.imageUrl is string && data.imageUrl.size() <= 500000
+        && data.cardTone is string && data.cardTone.size() <= 20 && data.cardTone in ['blush', 'ivory', 'dusty', 'cocoa']
+        && data.isPublished is bool
+        && data.updatedAt is timestamp
+        && data.updatedBy is string && data.updatedBy.size() >= 1 && data.updatedBy.size() <= 128 && data.updatedBy.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isValidGalleryItem(data) {
+      return data.keys().hasAll([
+          'title', 'category', 'imageUrl', 'sortOrder', 'createdAt', 'updatedAt', 'createdBy'
+        ])
+        && data.keys().hasOnly([
+          'title', 'category', 'imageUrl', 'sortOrder', 'createdAt', 'updatedAt', 'createdBy'
+        ])
+        && data.title is string && data.title.size() >= 1 && data.title.size() <= 120
+        && data.category is string && data.category.size() >= 1 && data.category.size() <= 120
+        && data.imageUrl is string && data.imageUrl.size() >= 1 && data.imageUrl.size() <= 500000
+        && data.sortOrder is number && data.sortOrder >= 0 && data.sortOrder <= 1000
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp
+        && data.createdBy is string && data.createdBy.size() >= 1 && data.createdBy.size() <= 128 && data.createdBy.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    function isValidCustomerInquiry(data) {
+      return data.keys().hasAll([
+          'userId', 'customerName', 'customerEmail', 'categoryInterest',
+          'message', 'preferredContact', 'status', 'createdAt', 'updatedAt'
+        ])
+        && data.keys().hasOnly([
+          'userId', 'customerName', 'customerEmail', 'categoryInterest',
+          'message', 'preferredContact', 'status', 'createdAt', 'updatedAt'
+        ])
+        && data.userId is string && data.userId.size() >= 1 && data.userId.size() <= 128 && data.userId.matches('^[a-zA-Z0-9_\\-]+$')
+        && data.customerName is string && data.customerName.size() >= 1 && data.customerName.size() <= 120
+        && data.customerEmail is string && data.customerEmail.size() >= 3 && data.customerEmail.size() <= 160
+        && data.categoryInterest is string && data.categoryInterest.size() >= 1 && data.categoryInterest.size() <= 120
+        && data.message is string && data.message.size() >= 1 && data.message.size() <= 2000
+        && data.preferredContact is string && data.preferredContact.size() <= 20 && data.preferredContact in ['whatsapp', 'email']
+        && data.status is string && data.status.size() <= 20 && data.status in ['pendiente', 'revisada', 'respondida']
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    function isValidUserProfile(data) {
+      return data.keys().hasAll([
+          'uid', 'displayName', 'email', 'photoURL', 'createdAt', 'updatedAt'
+        ])
+        && data.keys().hasOnly([
+          'uid', 'displayName', 'email', 'photoURL', 'createdAt', 'updatedAt'
+        ])
+        && data.uid is string && data.uid.size() >= 1 && data.uid.size() <= 128 && data.uid.matches('^[a-zA-Z0-9_\\-]+$')
+        && data.displayName is string && data.displayName.size() >= 1 && data.displayName.size() <= 120
+        && data.email is string && data.email.size() >= 3 && data.email.size() <= 160
+        && data.photoURL is string && data.photoURL.size() <= 500
+        && data.createdAt is timestamp
+        && data.updatedAt is timestamp;
+    }
+
+    // Boot connection check document
+    match /test/connection {
+      allow get: if true;
+    }
+
+    // Admin registry (read own record only; managed server-side / console)
+    match /admins/{userId} {
+      allow get: if isVerifiedUser() && isValidId(userId) && request.auth.uid == userId;
+      allow list, write: if false;
+    }
+
+    // Public Bakery Profile (Admin editable)
+    match /bakery_profile/{profileId} {
+      allow get: if isValidId(profileId);
+      allow list: if true;
+      allow create: if isAdmin()
+        && isValidId(profileId)
+        && isValidBakeryProfile(incoming())
+        && incoming().updatedBy == request.auth.uid
+        && incoming().updatedAt == request.time;
+      allow update: if isAdmin()
+        && isValidId(profileId)
+        && isValidBakeryProfile(incoming())
+        && incoming().updatedBy == request.auth.uid
+        && incoming().updatedAt == request.time
+        && incoming().diff(existing()).affectedKeys().hasOnly([
+          'businessName', 'category', 'location', 'phone', 'whatsapp', 'email',
+          'instagramUrl', 'tiktokUrl', 'heroImageUrl', 'aboutImageUrl',
+          'officialDescription', 'ownerBio', 'fullAddress', 'openingHours',
+          'flavoursAndSizes', 'priceNotes', 'orderingProcess', 'minimumOrder',
+          'deliveryOptions', 'paymentMethods', 'updatedAt', 'updatedBy'
+        ]);
+      allow delete: if isAdmin() && isValidId(profileId);
+    }
+
+    // Public Product Categories (Admin editable)
+    match /products/{productId} {
+      allow get: if isValidId(productId);
+      allow list: if true;
+      allow create: if isAdmin()
+        && isValidId(productId)
+        && isValidProductCategory(incoming())
+        && incoming().updatedBy == request.auth.uid
+        && incoming().updatedAt == request.time;
+      allow update: if isAdmin()
+        && isValidId(productId)
+        && isValidProductCategory(incoming())
+        && incoming().updatedBy == request.auth.uid
+        && incoming().updatedAt == request.time
+        && incoming().diff(existing()).affectedKeys().hasOnly([
+          'title', 'slug', 'sortOrder', 'verifiedSummary', 'imageUrl',
+          'cardTone', 'isPublished', 'updatedAt', 'updatedBy'
+        ]);
+      allow delete: if isAdmin() && isValidId(productId);
+    }
+
+    // Public Real Client Product Gallery (Admin editable)
+    match /gallery_items/{itemId} {
+      allow get: if isValidId(itemId);
+      allow list: if true;
+      allow create: if isAdmin()
+        && isValidId(itemId)
+        && isValidGalleryItem(incoming())
+        && incoming().createdBy == request.auth.uid
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+      allow update: if isAdmin()
+        && isValidId(itemId)
+        && isValidGalleryItem(incoming())
+        && incoming().createdBy == existing().createdBy
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && incoming().diff(existing()).affectedKeys().hasOnly([
+          'title', 'category', 'imageUrl', 'sortOrder', 'updatedAt'
+        ]);
+      allow delete: if isAdmin() && isValidId(itemId);
+    }
+
+    // Private Customer Inquiries (Owner or Admin only)
+    match /inquiries/{inquiryId} {
+      allow get: if isVerifiedUser()
+        && isValidId(inquiryId)
+        && (resource.data.userId == request.auth.uid || isAdmin());
+      allow list: if isVerifiedUser()
+        && (resource.data.userId == request.auth.uid || isAdmin());
+      allow create: if isVerifiedUser()
+        && isValidId(inquiryId)
+        && isValidCustomerInquiry(incoming())
+        && incoming().userId == request.auth.uid
+        && incoming().status == 'pendiente'
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+      allow update: if isVerifiedUser()
+        && isValidId(inquiryId)
+        && isValidCustomerInquiry(incoming())
+        && incoming().userId == existing().userId
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && (
+          (isAdmin() && incoming().diff(existing()).affectedKeys().hasOnly(['status', 'updatedAt'])) ||
+          (existing().userId == request.auth.uid
+            && existing().status == 'pendiente'
+            && incoming().status == 'pendiente'
+            && incoming().customerEmail == existing().customerEmail
+            && incoming().diff(existing()).affectedKeys().hasOnly(['categoryInterest', 'message', 'preferredContact', 'updatedAt']))
+        );
+      allow delete: if isVerifiedUser()
+        && isValidId(inquiryId)
+        && (isAdmin() || (existing().userId == request.auth.uid && existing().status == 'pendiente'));
+    }
+
+    // Private User Profiles (Owner or Admin only)
+    match /users/{userId} {
+      allow get: if isVerifiedUser()
+        && isValidId(userId)
+        && (request.auth.uid == userId || isAdmin());
+      allow list: if isVerifiedUser()
+        && (resource.data.uid == request.auth.uid || isAdmin());
+      allow create: if isVerifiedUser()
+        && isValidId(userId)
+        && request.auth.uid == userId
+        && isValidUserProfile(incoming())
+        && incoming().uid == request.auth.uid
+        && incoming().createdAt == request.time
+        && incoming().updatedAt == request.time;
+      allow update: if isVerifiedUser()
+        && isValidId(userId)
+        && (request.auth.uid == userId || isAdmin())
+        && isValidUserProfile(incoming())
+        && incoming().uid == existing().uid
+        && incoming().createdAt == existing().createdAt
+        && incoming().updatedAt == request.time
+        && (
+          isAdmin() ||
+          incoming().diff(existing()).affectedKeys().hasOnly(['displayName', 'photoURL', 'updatedAt'])
+        );
+      allow delete: if isAdmin() && isValidId(userId);
+    }
+  }
+}
